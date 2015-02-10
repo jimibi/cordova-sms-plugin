@@ -19,8 +19,15 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.os.Bundle;
+import android.telephony.SmsMessage;
+import org.apache.cordova.PluginResult;
+
 public class Sms extends CordovaPlugin {
 	public final String ACTION_SEND_SMS = "send";
+	public final String ACTION_RECEIVE_SMS = "receive";
+	public final String STOP_RECEIVE_SMS = "stop";
+	public final String HAS_SMS_POSSIBILITY = "possible";
 	private static final String INTENT_FILTER_SMS_SENT = "SMS_SENT";
 
 	BroadcastReceiver receiver;
@@ -136,25 +143,15 @@ public class Sms extends CordovaPlugin {
 		}
 	}
 	
-	private void receive(String phoneNumber, String message) {
-		SmsManager manager = SmsManager.getDefault();
-		PendingIntent sentIntent = PendingIntent.getBroadcast(this.cordova.getActivity(),
-			0, new Intent(INTENT_FILTER_SMS_SENT), 0);
+	private void startReceive() {
 
-		// Use SendMultipartTextMessage if the message requires it
-		int parts_size = manager.divideMessage(message).size();
-		if (parts_size > 1) {
-			ArrayList<String> parts = manager.divideMessage(message);
-			ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
-			for (int i = 0; i < parts_size; ++i) {
-				sentIntents.add(sentIntent);
-			}
-			manager.sendMultipartTextMessage(phoneNumber, null, parts,
-					sentIntents, null);
-		} else {
-			manager.sendTextMessage(phoneNumber, null, message, sentIntent,
-					null);
-		}
+	}
+	
+	private void stopReceive() {
+
+	}
+	private void isPossible() {
+
 	}
 	
 	@Override
