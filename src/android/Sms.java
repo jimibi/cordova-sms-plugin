@@ -135,7 +135,28 @@ public class Sms extends CordovaPlugin {
 					null);
 		}
 	}
+	
+	private void receive(String phoneNumber, String message) {
+		SmsManager manager = SmsManager.getDefault();
+		PendingIntent sentIntent = PendingIntent.getBroadcast(this.cordova.getActivity(),
+			0, new Intent(INTENT_FILTER_SMS_SENT), 0);
 
+		// Use SendMultipartTextMessage if the message requires it
+		int parts_size = manager.divideMessage(message).size();
+		if (parts_size > 1) {
+			ArrayList<String> parts = manager.divideMessage(message);
+			ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
+			for (int i = 0; i < parts_size; ++i) {
+				sentIntents.add(sentIntent);
+			}
+			manager.sendMultipartTextMessage(phoneNumber, null, parts,
+					sentIntents, null);
+		} else {
+			manager.sendTextMessage(phoneNumber, null, message, sentIntent,
+					null);
+		}
+	}
+	
 	@Override
 	public void onDestroy() {
 		if (this.receiver != null) {
