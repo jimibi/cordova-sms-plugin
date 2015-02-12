@@ -1,3 +1,5 @@
+In Developement
+
 cordova-sms-plugin
 =====================
 
